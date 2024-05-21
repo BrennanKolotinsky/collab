@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       get 'playlist/index'
       post 'playlist/create'
+      get 'playlist/show/:id', to: 'playlist#show'
     end
   end
   devise_for :users
