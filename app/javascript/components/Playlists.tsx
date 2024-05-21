@@ -6,6 +6,20 @@ import { Playlist } from '../types/playlist';
 import { getPlaylists } from '../services';
 import { Link } from 'react-router-dom';
 
+export const CreatePlaylistButtom = (): JSX.Element => {
+    return (
+        <div className="d-flex justify-content-center mt-4">
+            <Link
+                to="/createPlaylist"
+                className="btn btn-lg custom-button"
+                role="button"
+                >
+                Create Playlist
+            </Link>
+        </div>
+    );
+};
+
 export default () => {
 
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
@@ -20,7 +34,7 @@ export default () => {
     }, []);
 
     if (playlists.length === 0) {
-        return <></>;
+        return <CreatePlaylistButtom />;
     };
 
     return (
@@ -43,15 +57,7 @@ export default () => {
                     })
                 }
             </table>
-            <div className="d-flex justify-content-center mt-4">
-                <Link
-                    to="/createPlaylist"
-                    className="btn btn-lg custom-button"
-                    role="button"
-                    >
-                    Create Playlist
-                </Link>
-            </div>
+            <CreatePlaylistButtom />
         </div>
     );
 };
