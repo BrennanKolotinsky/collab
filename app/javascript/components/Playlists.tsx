@@ -43,6 +43,15 @@ export default () => {
                     })
                 }
             </table>
+            <div className="d-flex justify-content-center mt-4">
+                <Link
+                    to="/createPlaylist"
+                    className="btn btn-lg custom-button"
+                    role="button"
+                    >
+                    Create Playlist
+                </Link>
+            </div>
         </div>
     );
 };
