@@ -20,4 +20,14 @@ RSpec.describe Api::V1::PlaylistController, type: :controller do
       expect(JSON.parse(response.body)).to eq([playlist_1.as_json])
     end
   end
+
+  describe "POST #create" do
+    let!(:user) { create(:user) }
+    before { allow(controller).to receive(:current_user) { user } }
+
+    it "returns http success" do
+      params = {name: 'My new playlist'}
+      expect { post :create, params: params }.to change{ Playlist.count }.by(1)
+    end
+  end
 end
