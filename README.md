@@ -3,6 +3,10 @@ Follow this guide: https://www.digitalocean.com/community/tutorials/how-to-set-u
 
 Tech Stack: Ruby on Rails, React, PostgreSQL, TypeScript, Jest and Rspec (mirroring VTS tech stack at past company)
 
+run ```yarn install``` to install necessary packages before continuing
+
+run ```bin/rails db:create``` and ```bin/rails db:migrate RAILS_ENV=development``` to create the database and run the necessary migrations before continuing
+
 run ```bin/dev``` to start server, then visit http://localhost:3000/
 
 run ```npm run check-types``` to check for TypeScript errors
