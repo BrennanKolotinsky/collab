@@ -1,4 +1,5 @@
 import { Playlist } from "../types/playlist";
+import { VideoAPI, emptyVideoResponse } from "../types/video";
 
 export const getPlaylist = async (id: number): Promise<Playlist | null> => {
     const url = `/api/v1/playlist/show/${id}`;
@@ -62,8 +63,9 @@ export const createPlaylist = async (name: string): Promise<Boolean> => {
     };
 };
 
-export const getVideos = async (page: number): Promise<any> => {
+export const getVideos = async (page: number): Promise<VideoAPI> => {
     const url = `/api/v1/video/index/${page}`;
+    console.log(url, "URL");
     try {
         const response = await fetch(url);
 
@@ -75,6 +77,6 @@ export const getVideos = async (page: number): Promise<any> => {
         }
     } catch(e) {
         console.warn(e);
-        return [];
+        return emptyVideoResponse;
     };
 };
