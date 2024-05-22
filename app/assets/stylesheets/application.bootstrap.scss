@@ -41,3 +41,15 @@
 .margin-left-large {
   margin-left: 32px;
 }
+
+.caret-container {
+  display: flex;
+  height: 300px;
+  width: 500px;
+  justify-content: center;
+  align-items: center;
+}
+
+.caret {
+  border: 1px solid black;
+}

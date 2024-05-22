@@ -7,9 +7,10 @@ export default (): JSX.Element => {
 
     const [playlistName, setPlaylistName] = useState<string>('');
     const [videoAPI, setVideoAPI] = useState<VideoAPI>(emptyVideoResponse);
-    const [selectedVideos, setSelectedVideos] = useState<Video[]>([]);
+    const [displayedVideos, setDisplayedVideos] = useState<Video[]>([]);
     const [currIndex, setCurrIndex] = useState<number>(0);
     const [page, setPage] = useState<number>(1);
+    const [selectedVideos, setSelectedVideos] = useState<Video[]>([]);
 
     const numberToDisplay = 5; // design decision to only display 5 videos at a time
 
@@ -20,7 +21,7 @@ export default (): JSX.Element => {
             setPage(page);
             setVideoAPI(videoAPIResp);
             const filteredVideos = videoAPIResp["videos"].slice(currIndex * 5, currIndex * 5 + 5);
-            setSelectedVideos(filteredVideos);
+            setDisplayedVideos(filteredVideos);
         };
 
         fetchVideos();
@@ -49,12 +50,13 @@ export default (): JSX.Element => {
         } else {
             const firstVideoIndex = (currIndex - 1) * 5;
             const filteredVideos = videoAPI["videos"].slice(firstVideoIndex, firstVideoIndex + 5);
-            setSelectedVideos(filteredVideos);
+            setDisplayedVideos(filteredVideos);
             setCurrIndex(currIndex - 1);
         };
     };
 
     const incrementIndex = (): void => {
+        // 3 indicates we are currently on the fourth index, and there are 4 sets of 5 videos per 20 videos
         if (currIndex === 3) {
             console.log("Incrementing page");
             setCurrIndex(0);
@@ -62,35 +64,81 @@ export default (): JSX.Element => {
         } else {
             const firstVideoIndex = (currIndex + 1) * 5;
             const filteredVideos = videoAPI["videos"].slice(firstVideoIndex, firstVideoIndex + 5);
-            setSelectedVideos(filteredVideos);
+            setDisplayedVideos(filteredVideos);
             setCurrIndex(currIndex + 1);
         }
     };
 
+    const addVideoToPlaylist = (video: Video) => {
+        if (!selectedVideos.includes(video) && selectedVideos.length < 5) {
+            setSelectedVideos((prevState) => [...prevState, video]);
+            alert("Added video to playlist");
+        };
+    };
+
+    const removeVideoFromPlaylist = (id: number) => {
+        setSelectedVideos((prevState) => prevState.filter((video) => video.id !== id));
+        alert("Removed video from playlist");
+    };
+
     return(
-        <div className='margin-left-large mt-4'>
+        <div className='margin-left-large mt-4 mb-4'>
             <h2>Create Playlist</h2>
             <div className="d-flex align-items-center mt-4">
-                <label>Playlist:</label>
+                <label>Playlist name:</label>
                 <input type='text' placeholder='My first playlist' className='margin-left-small' onChange={(e) =>  setPlaylistName(e.target.value)}></input>
             </div>
             <h3 className="mt-4">Optional Videos (click to add to playlist):</h3>
             {
                 videoAPI && (
+                    <div className="d-flex align-items-center border">
+                        {
+                            (currIndex > 0 || page !== 1) &&
+                                <div className="caret-container"><i className="bi bi-caret-left caret" onClick={decrementIndex}></i></div>
+                        }
+                        <table className="mx-auto">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Thumbnail</th>
+                                    <th>Title</th>
+                                    <th className='w-50'>Description</th>
+                                    <th>View Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    displayedVideos && displayedVideos.map((video) => {
+                                        return <tr key={video.id} className="mt-4" onClick={() => addVideoToPlaylist(video)}>
+                                            <td>{video.id}</td>
+                                            <td><img src={video.thumbnail_url} alt="video thumbnail" width="150" height="150" /> </td>
+                                            <td>{video.title}</td>
+                                            <td>{video.description?.substring(0, 100)}{video.description?.length >= 100 ? '...' : ''}</td>
+                                            <td>{video.views}</td>
+                                        </tr>
+                                    })
+                                }
+                            </tbody>
+                        </table>
+                        {
+                            ((page * 20) < videoAPI.meta.total || videoAPI["videos"][videoAPI["videos"].length - 1] !== displayedVideos[displayedVideos.length - 1]) &&
+                                <div className="caret-container"><i className="bi bi-caret-right caret" onClick={incrementIndex}></i></div>
+                        }
+                    </div>
+                )
+            }
+
+            <h3 className="mt-4">Selected Videos (click to remove from playlist):</h3>
+            {
+                videoAPI && (
                     <div className="d-flex align-items-center">
                         {
-                            (currIndex > 0 || page !== 1) && <i className="bi bi-caret-left" onClick={decrementIndex}></i>
-                        }
-                        {
-                            selectedVideos && selectedVideos.map((video) => {
-                                return <div key={video.id} className="mt-4">
-                                    <label>{video.id}</label>
+                            selectedVideos.map((video) => {
+                                return <div key={video.id} className="mt-4" onClick={() => removeVideoFromPlaylist(video.id)}>
+                                    <label>Id: {video.id}</label>
                                     <img src={video.thumbnail_url} alt="video thumbnail" width="150" height="150" />
                                 </div>
                             })
-                        }
-                        {
-                            ((page * 20) < videoAPI.meta.total || videoAPI["videos"][videoAPI["videos"].length - 1] !== selectedVideos[selectedVideos.length - 1]) && <i className="bi bi-caret-right" onClick={incrementIndex}></i>
                         }
                     </div>
                 )
