@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPlaylist, getVideos } from '../services';
 import { VideoAPI, Video, emptyVideoResponse } from '../types/video';
 import { Link } from 'react-router-dom';
+import PlaylistTable from './PlaylistTable';
 
 export default (): JSX.Element => {
 
@@ -96,30 +97,7 @@ export default (): JSX.Element => {
                             (currIndex > 0 || page !== 1) &&
                                 <div className="caret-container"><i className="bi bi-caret-left caret" onClick={decrementIndex}></i></div>
                         }
-                        <table className="mx-auto">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Thumbnail</th>
-                                    <th>Title</th>
-                                    <th className='w-50'>Description</th>
-                                    <th>View Count</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    displayedVideos && displayedVideos.map((video) => {
-                                        return <tr key={video.id} className="mt-4" onClick={() => addVideoToPlaylist(video)}>
-                                            <td>{video.id}</td>
-                                            <td><img src={video.thumbnail_url} alt="video thumbnail" width="150" height="150" /> </td>
-                                            <td>{video.title}</td>
-                                            <td>{video.description?.substring(0, 100)}{video.description?.length >= 100 ? '...' : ''}</td>
-                                            <td>{video.views}</td>
-                                        </tr>
-                                    })
-                                }
-                            </tbody>
-                        </table>
+                        <PlaylistTable videos={displayedVideos} addVideoToPlaylist={addVideoToPlaylist} />
                         {
                             ((page * 20) < videoAPI.meta.total || videoAPI["videos"][videoAPI["videos"].length - 1] !== displayedVideos[displayedVideos.length - 1]) &&
                                 <div className="caret-container"><i className="bi bi-caret-right caret" onClick={incrementIndex}></i></div>
