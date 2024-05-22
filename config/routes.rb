@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
+      get 'video/index/:page', to: 'video#index'
+
       get 'playlist/index'
       post 'playlist/create'
       get 'playlist/show/:id', to: 'playlist#show'
