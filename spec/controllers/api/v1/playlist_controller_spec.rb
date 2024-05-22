@@ -26,8 +26,9 @@ RSpec.describe Api::V1::PlaylistController, type: :controller do
     before { allow(controller).to receive(:current_user) { user } }
 
     it "returns http success" do
-      params = {name: 'My new playlist'}
+      params = {name: 'My new playlist', videos_attributes: [{title: 'Fake video', description: 'Fake video description', thumbnail_url: 'test.com', views: 10}] }
       expect { post :create, params: params }.to change{ Playlist.count }.by(1)
+      expect { post :create, params: params }.to change{ Video.count }.by(1)
     end
   end
 

@@ -12,6 +12,7 @@ class Api::V1::PlaylistController < ApplicationController
 
   def create
     playlist = Playlist.create!(playlist_params.merge(user: current_user))
+    render json: playlist
   end
 
   private
@@ -21,6 +22,6 @@ class Api::V1::PlaylistController < ApplicationController
   end
 
   def playlist_params
-    params.permit(:name)
+    params.permit(:name, videos_attributes: [:title, :description, :thumbnail_url, :views])
   end
 end

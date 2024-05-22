@@ -33,7 +33,7 @@ export default (): JSX.Element => {
             return;
         };
 
-        const success = await createPlaylist(playlistName);
+        const success = await createPlaylist(playlistName, selectedVideos);
         if (success) {
             alert('Successfully created playlist');
             window.open(`/`); 

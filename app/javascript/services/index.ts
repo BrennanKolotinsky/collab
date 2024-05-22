@@ -1,5 +1,5 @@
 import { Playlist } from "../types/playlist";
-import { VideoAPI, emptyVideoResponse } from "../types/video";
+import { VideoAPI, Video, emptyVideoResponse } from "../types/video";
 
 export const getPlaylist = async (id: number): Promise<Playlist | null> => {
     const url = `/api/v1/playlist/show/${id}`;
@@ -35,10 +35,11 @@ export const getPlaylists = async (): Promise<Playlist[]> => {
     };
 };
 
-export const createPlaylist = async (name: string): Promise<Boolean> => {
+export const createPlaylist = async (name: string, videos: Video[]): Promise<Boolean> => {
     const url = `/api/v1/playlist/create`;
     const body = {
         name,
+        videos_attributes: videos,
     };
 
     try {
