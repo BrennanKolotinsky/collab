@@ -13,6 +13,15 @@ RSpec.describe Playlist, type: :model do
     end
   end
 
+  describe '#videos' do
+    it 'has videos' do
+      user = create(:user)
+      playlist = create(:playlist, user: user)
+      video = create(:video, playlist: playlist)
+      expect(playlist.videos).to eq([video])
+    end
+  end
+
   describe '#name' do
     it 'is not valid without a name' do
       user = create(:user)

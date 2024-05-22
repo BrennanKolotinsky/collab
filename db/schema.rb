@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_22_011412) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_22_051922) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -41,7 +41,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_22_011412) do
     t.integer "views"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "playlist_id", null: false
+    t.index ["playlist_id"], name: "index_videos_on_playlist_id"
   end
 
   add_foreign_key "playlists", "users"
+  add_foreign_key "videos", "playlists"
 end
