@@ -90,7 +90,7 @@ export default (): JSX.Element => {
                             })
                         }
                         {
-                            (page - 1) * 20 + currIndex * 5 < videoAPI.meta.total && <i className="bi bi-caret-right" onClick={incrementIndex}></i>
+                            ((page * 20) < videoAPI.meta.total || videoAPI["videos"][videoAPI["videos"].length - 1] !== selectedVideos[selectedVideos.length - 1]) && <i className="bi bi-caret-right" onClick={incrementIndex}></i>
                         }
                     </div>
                 )
