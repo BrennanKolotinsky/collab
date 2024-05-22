@@ -80,5 +80,6 @@ end
 
 gem "devise" 
 gem "httparty"
+gem "active_model_serializers", require: true
 
 

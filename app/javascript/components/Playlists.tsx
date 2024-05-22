@@ -52,7 +52,7 @@ export default () => {
                                     {playlist.name}
                                 </Link>
                             </td>
-                            <td className='border'>X</td>
+                            <td className='border'>{playlist.video_count}</td>
                         </tr>
                     })
                 }
