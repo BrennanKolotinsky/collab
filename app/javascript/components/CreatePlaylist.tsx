@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPlaylist, getVideos } from '../services';
 import { VideoAPI, Video, emptyVideoResponse } from '../types/video';
 import { Link } from 'react-router-dom';
@@ -90,6 +90,17 @@ export default (): JSX.Element => {
         setSearchedVideos(filteredVideos.slice(0, 5));
     };
 
+    const dragVideo = useRef<number>(0);
+    const draggedOverVideo = useRef<number>(0);
+
+    const handleSort = () => {
+        const selectedVideoClone = [...selectedVideos];
+        const temp = selectedVideoClone[dragVideo.current];
+        selectedVideoClone[dragVideo.current] = selectedVideoClone[draggedOverVideo.current];
+        selectedVideoClone[draggedOverVideo.current] = temp;
+        setSelectedVideos(selectedVideoClone);
+    };
+
     return(
         <div className='margin-left-large mt-4 mb-4'>
             <h2>Create Playlist</h2>
@@ -97,7 +108,7 @@ export default (): JSX.Element => {
                 <label>Playlist name:</label>
                 <input type='text' placeholder='My first playlist' className='margin-left-small' onChange={(e) =>  setPlaylistName(e.target.value)}></input>
             </div>
-            <h3 className="mt-4">Optional Videos (click to add to playlist):</h3>
+            <h3 className="mt-4">Optional Videos (click to add to playlist, navigate with caret symbols: &lt; and &gt;):</h3>
             <input type='text' placeholder='Search for videos' onChange={(e) => searchByTitle(e.target.value)}></input>
             {
                 videoAPI && searchTerm === '' && (
@@ -122,16 +133,27 @@ export default (): JSX.Element => {
                 )
             }
 
-            <h3 className="mt-4">Selected Videos (click to remove from playlist):</h3>
+            <h3 className="mt-4">Selected Videos (click to remove from playlist, or drag to re-order):</h3>
             {
                 videoAPI && (
                     <div className="d-flex align-items-center">
                         {
-                            selectedVideos.map((video) => {
-                                return <div key={video.id} className="mt-4" onClick={() => removeVideoFromPlaylist(video.id)}>
-                                    <label>Id: {video.id}</label>
-                                    <img src={video.thumbnail_url} alt="video thumbnail" width="150" height="150" />
-                                </div>
+                            selectedVideos.map((video, index) => {
+                                return (
+                                    <div
+                                        key={video.id}
+                                        className="mt-4"
+                                        onClick={() => removeVideoFromPlaylist(video.id)}
+                                        draggable
+                                        onDragStart={() => (dragVideo.current = index)}
+                                        onDragEnter={() => (draggedOverVideo.current = index)}
+                                        onDragEnd={handleSort}
+                                        onDragOver={(e) => e.preventDefault()}
+                                    >
+                                        <label>Id: {video.id}</label>
+                                        <img src={video.thumbnail_url} alt="video thumbnail" width="150" height="150" />
+                                    </div>
+                                )
                             })
                         }
                     </div>
