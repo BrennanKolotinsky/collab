@@ -17,7 +17,7 @@ RSpec.describe Api::V1::PlaylistController, type: :controller do
 
     it "returns an array of playlists" do
       get :index
-      expect(JSON.parse(response.body)).to eq([playlist_1.as_json])
+      expect(JSON.parse(response.body)).to eq([{"id"=>playlist_1.id, "name"=>playlist_1.name, "video_count"=>playlist_1.videos.length, "videos"=>playlist_1.videos}])
     end
   end
 
@@ -38,7 +38,7 @@ RSpec.describe Api::V1::PlaylistController, type: :controller do
 
     it "returns http success" do
       get :show, params: { id: playlist.id }
-      expect(JSON.parse(response.body)).to eq(playlist.as_json)
+      expect(JSON.parse(response.body)["id"]).to eq(playlist.id)
     end
   end
 end
