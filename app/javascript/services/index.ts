@@ -61,3 +61,20 @@ export const createPlaylist = async (name: string): Promise<Boolean> => {
         return false;
     };
 };
+
+export const getVideos = async (page: number): Promise<any> => {
+    const url = `/api/v1/video/index/${page}`;
+    try {
+        const response = await fetch(url);
+
+        if (response.ok) {
+            const videos = await response.json();
+            return videos;
+        } else {
+            throw response;
+        }
+    } catch(e) {
+        console.warn(e);
+        return [];
+    };
+};
