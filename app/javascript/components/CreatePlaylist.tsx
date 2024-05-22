@@ -12,6 +12,8 @@ export default (): JSX.Element => {
     const [currIndex, setCurrIndex] = useState<number>(0);
     const [page, setPage] = useState<number>(1);
     const [selectedVideos, setSelectedVideos] = useState<Video[]>([]);
+    const [searchedVideos, setSearchedVideos] = useState<Video[]>([]);
+    const [searchTerm, setSearchTerm] = useState<string>('');
 
     const numberToDisplay = 5; // design decision to only display 5 videos at a time
 
@@ -82,6 +84,12 @@ export default (): JSX.Element => {
         alert("Removed video from playlist");
     };
 
+    const searchByTitle = (title: string) => {
+        setSearchTerm(title);
+        const filteredVideos = videoAPI["videos"].filter((video) => video.title.toLowerCase().includes(title.toLowerCase()));
+        setSearchedVideos(filteredVideos.slice(0, 5));
+    };
+
     return(
         <div className='margin-left-large mt-4 mb-4'>
             <h2>Create Playlist</h2>
@@ -90,8 +98,9 @@ export default (): JSX.Element => {
                 <input type='text' placeholder='My first playlist' className='margin-left-small' onChange={(e) =>  setPlaylistName(e.target.value)}></input>
             </div>
             <h3 className="mt-4">Optional Videos (click to add to playlist):</h3>
+            <input type='text' placeholder='Search for videos' onChange={(e) => searchByTitle(e.target.value)}></input>
             {
-                videoAPI && (
+                videoAPI && searchTerm === '' && (
                     <div className="d-flex align-items-center border">
                         {
                             (currIndex > 0 || page !== 1) &&
@@ -102,6 +111,13 @@ export default (): JSX.Element => {
                             ((page * 20) < videoAPI.meta.total || videoAPI["videos"][videoAPI["videos"].length - 1] !== displayedVideos[displayedVideos.length - 1]) &&
                                 <div className="caret-container"><i className="bi bi-caret-right caret" onClick={incrementIndex}></i></div>
                         }
+                    </div>
+                )
+            }
+            {
+                searchTerm !== '' && (
+                    <div className="d-flex align-items-center border">
+                        <PlaylistTable videos={searchedVideos} addVideoToPlaylist={addVideoToPlaylist} />
                     </div>
                 )
             }
